@@ -20,6 +20,89 @@ class Window(Frame):
 
 	# Create the init_window function
 	def init_window(self):
+
+		# Clear the text in the entry field
+		def clear_entry(self):
+			e.set("")
+
+		def open_file():
+			pass
+		def client_exit():
+			sys.exit(0)
+		def undo_edit():
+			pass
+		def text_cut():
+			pass
+		def text_copy():
+			pass
+		def text_paste():
+			pass
+		def client_clean():
+			pass
+		def view_students():
+			pass
+		def view_help():
+			pass
+		def about():
+			pass
+
+
+		# Get all forms data and save them in the database
+		def save():
+			student_first_name = first_name.get()
+			student_last_name = last_name.get()
+			student_dob = dob.get()
+			student_father_name = father_name.get()
+			student_mother_name = mother_name.get()
+			student_major = major.get()
+			student_years_choosen = years_choosen.get()
+			student_country = country.get()
+			student_state = state.get()
+			# student_description = "Nothing"
+			student_description = description.get('1.0', END)
+
+			if(
+			   	(
+				    str(student_first_name) != "" and
+				   	str(student_last_name) != "" and
+				   	str(student_dob) != "" and
+				   	str(student_father_name) != "" and
+				   	str(student_mother_name) != "" and
+				   	str(student_major) != "" and
+				   	str(student_years_choosen) != "" and
+				   	str(student_country) != "" and
+				   	str(student_state) != "" and
+				   	str(student_description != "")
+				) and (
+					len(str(student_description)) <= 500
+				)
+			   	):
+				student_first_name["text"] = ""
+				student_last_name["text"] = ""
+				student_dob["text"] = ""
+				student_father_name["text"] = ""
+				student_mother_name["text"] = ""
+				student_major["text"] = ""
+				student_years_choosen["text"] = ""
+				student_country["text"] = ""
+				student_state["text"] = ""
+				student_description["text"] = ""
+				print('student_first_name: ', student_first_name)
+				print('student_last_name: ', student_last_name)
+				print('student_dob: ', student_dob)
+				print('student_father_name: ', student_father_name)
+				print('student_mother_name: ', student_mother_name)
+				print('student_major: ', student_major)
+				print('student_years_choosen: ', student_years_choosen)
+				print('student_country: ', student_country)
+				print('student_state: ', student_state)
+				print('student_description: ', student_description)
+
+
+		# Create the choose year function
+		def choose_year(self, entry):
+			print("you study in %s" % entry)
+
 		# Change the title of the window
 		self.master.title('Student Management')
 		self.master.iconname('studentmanagement')
@@ -32,29 +115,29 @@ class Window(Frame):
 
 		def makeFileCommandMenu():
 			File = Menu(menuBar, tearoff=False)
-			File.add_command(label="Open...", underline=0, command=self.open_file)
+			File.add_command(label="Open...", underline=0, command=open_file)
 			File.add_separator()
-			File.add_command(label="Exit", underline=0, command=self.client_exit)
+			File.add_command(label="Exit", underline=0, command=client_exit)
 			return File
 		def makeEditCommandMenu():
 			Edit = Menu(menuBar, tearoff=False)
-			Edit.add_command(label="Undo", underline=0, command=self.undo_edit)
+			Edit.add_command(label="Undo", underline=0, command=undo_edit)
 			Edit.add_separator()
-			Edit.add_command(label="Cut", underline=0, command=self.text_cut)
-			Edit.add_command(label="Copy", underline=0, command=self.text_copy)
-			Edit.add_command(label="Paste", underline=0, command=self.text_paste)
+			Edit.add_command(label="Cut", underline=0, command=text_cut)
+			Edit.add_command(label="Copy", underline=0, command=text_copy)
+			Edit.add_command(label="Paste", underline=0, command=text_paste)
 			Edit.add_separator()
-			Edit.add_command(label="Clear", underline=0, command=self.client_clean)
+			Edit.add_command(label="Clear", underline=0, command=client_clean)
 			return Edit
 		def makeViewCommandMenu():
 			View = Menu(menuBar, tearoff=False)
-			View.add_command(label="Enter Full Screen", underline=0, command=self.full_screen)
+			View.add_command(label="View Students", underline=0, command=view_students)
 			return View
 		def makeHelpCommandMenu():
 			Help = Menu(menuBar, tearoff=False)
-			Help.add_command(label="View Help", underline=0, command=self.view_help)
+			Help.add_command(label="View Help", underline=0, command=view_help)
 			Help.add_separator()
-			Help.add_command(label="About Student Management", underline=0, command=self.about)
+			Help.add_command(label="About Student Management", underline=0, command=about)
 			return Help
 
 		File = makeFileCommandMenu()
@@ -84,8 +167,10 @@ class Window(Frame):
 		Label(data_entry_frame, text="Date Of Birth: ", font=('Tahoma', 9)).grid(row=0, column=4, padx=(25, 2), pady=(40, 20), sticky=W)
 		e = StringVar()
 		dob = Entry(data_entry_frame, textvariable=e, font=('Tahoma', 9), width=24, relief=SOLID, borderwidth=1)
+		dob.bind('<FocusIn>', clear_entry)
 		dob.grid(row=0, column=5, ipady=4, pady=(40, 20), sticky=W)
 		e.set("DD-MM-YYYY")
+
 
 		# Parents information
 		Label(data_entry_frame, text="Father's Name: ", font=('Tahoma', 9)).grid(row=1, column=0, padx=(10, 2), pady=(20, 20), sticky=W)
@@ -108,7 +193,7 @@ class Window(Frame):
 		years_choosen['values'] = (1,2,3,4)
 		years_choosen.grid(row=2, column=3, padx=2, ipady=4, sticky=W)
 		# Set the default value for years_choosen
-		years_choosen.current(0)
+		years_choosen.selectitem(1)
 
 		# Location information
 		Label(data_entry_frame, text="Country: ", font=('Tahoma', 9)).grid(row=3, column=0, padx=(10, 2), sticky=W)
@@ -119,45 +204,28 @@ class Window(Frame):
 		state = Entry(data_entry_frame, font=('Tahoma', 9), width=24, relief=SOLID, borderwidth=1)
 		state.grid(row=3, column=3, ipady=4, pady=(20, 20), sticky=W)
 
+		# General description and background
 		Label(data_entry_frame, text="Description: ", font=('Tahoma', 9)).grid(row=4, column=0, padx=(10, 2), sticky=W)
-		description = Entry(data_entry_frame, font=('Tahoma', 9), width=24, relief=SOLID, borderwidth=1)
-		description.grid(row=4, column=4, ipady=4, pady=(20, 20), sticky=W)
+		description = Text(data_entry_frame, font=('Tahoma', 9), width=109, height=5, relief=SOLID, borderwidth=1)
+		description.grid(row=4, column=1, columnspan=5, ipady=4, pady=(20, 20), sticky=W)
 
-	def open_file(self):
-		pass
-	def client_exit(self):
-		sys.exit(0)
-	def undo_edit(self):
-		pass
-	def text_cut(self):
-		pass
-	def text_copy(self):
-		pass
-	def text_paste(self):
-		pass
-	def client_clean(self):
-		pass
-	def full_screen(self):
-		pass
-	def view_help(self):
-		pass
-	def about(self):
-		pass
+		# Command buttons
+		cancel_btn = Button(data_entry_frame, text='Cancel', width=12, height=2, relief=SOLID, borderwidth=1)
+		cancel_btn.grid(row=5, column=5, pady=(10, 10), sticky=W)
 
-
-	# Create the choose year function
-	def choose_year(self, entry):
-		print("you study in %s" % entry)
+		# Save data button
+		save_btn = Button(data_entry_frame, text='Save', width=12, height=2, relief=SOLID, borderwidth=1, command=save)
+		save_btn.grid(row=5, column=5, pady=(10, 10), sticky=E)
 
 
 # Create window
 root = Tk()
 WIDTH = 890
-HEIGHT = 500
+HEIGHT = 550
 POS_X = int(root.winfo_screenwidth()/2-WIDTH/2)
 POS_Y = int(root.winfo_screenheight()/2-HEIGHT/2)-50
 root.geometry(f'{WIDTH}x{HEIGHT}+{POS_X}+{POS_Y}')
-root.minsize(WIDTH, HEIGHT)
-
+# root.minsize(WIDTH, HEIGHT)
+root.resizable(0,0)
 app = Window(root)
 root.mainloop()
