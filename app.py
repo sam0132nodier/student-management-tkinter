@@ -27,7 +27,7 @@ class Window(Frame):
 
 		def open_file():
 			pass
-		def client_exit():
+		def client_exit(self):
 			sys.exit(0)
 		def undo_edit():
 			pass
@@ -74,19 +74,21 @@ class Window(Frame):
 				   	str(student_state) != "" and
 				   	str(student_description != "")
 				) and (
+					student_years_choosen.isdigit() and
+					int(student_years_choosen) <= 4 and
 					len(str(student_description)) <= 500
 				)
 			   	):
-				student_first_name["text"] = ""
-				student_last_name["text"] = ""
-				student_dob["text"] = ""
-				student_father_name["text"] = ""
-				student_mother_name["text"] = ""
-				student_major["text"] = ""
-				student_years_choosen["text"] = ""
-				student_country["text"] = ""
-				student_state["text"] = ""
-				student_description["text"] = ""
+				first_name["text"] = ""
+				last_name["text"] = ""
+				dob["text"] = ""
+				father_name["text"] = ""
+				mother_name["text"] = ""
+				major["text"] = ""
+				years_choosen["text"] = ""
+				country["text"] = ""
+				state["text"] = ""
+				description["value"] = ""
 				print('student_first_name: ', student_first_name)
 				print('student_last_name: ', student_last_name)
 				print('student_dob: ', student_dob)
@@ -191,9 +193,9 @@ class Window(Frame):
 		n = StringVar()
 		years_choosen = ttk.Combobox(data_entry_frame, font=('Tahoma', 9), textvariable=n, width=21)
 		years_choosen['values'] = (1,2,3,4)
-		years_choosen.grid(row=2, column=3, padx=2, ipady=4, sticky=W)
 		# Set the default value for years_choosen
-		years_choosen.selectitem(1)
+		years_choosen.current(1)
+		years_choosen.grid(row=2, column=3, padx=2, ipady=4, sticky=W)
 
 		# Location information
 		Label(data_entry_frame, text="Country: ", font=('Tahoma', 9)).grid(row=3, column=0, padx=(10, 2), sticky=W)
@@ -210,8 +212,9 @@ class Window(Frame):
 		description.grid(row=4, column=1, columnspan=5, ipady=4, pady=(20, 20), sticky=W)
 
 		# Command buttons
-		cancel_btn = Button(data_entry_frame, text='Cancel', width=12, height=2, relief=SOLID, borderwidth=1)
-		cancel_btn.grid(row=5, column=5, pady=(10, 10), sticky=W)
+		close_btn = Button(data_entry_frame, text='Close', width=12, height=2, relief=SOLID, borderwidth=1)
+		close_btn.grid(row=5, column=5, pady=(10, 10), sticky=W)
+		close_btn.bind("<Button-1>", client_exit)
 
 		# Save data button
 		save_btn = Button(data_entry_frame, text='Save', width=12, height=2, relief=SOLID, borderwidth=1, command=save)
