@@ -7,6 +7,7 @@ from datetime import datetime as dt
 import sys
 import re
 import uuid
+from dialog import MyDialog
 
 # Change the directory to the current directory of this file
 # In case there are files missing
@@ -50,7 +51,11 @@ class Window(Frame):
 		def client_clean():
 			pass
 		def view_students():
-			pass
+                        cursor = connection.cursor()
+                        data = []
+                        for row in cursor.execute("SELECT student_id, first_name, last_name, major, major, years_choosen, country, state, description FROM students"):
+                                data.append(row)
+                        mydialog = MyDialog(root, data, title="motherfucker")
 		def view_help():
 			pass
 		def about():
