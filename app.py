@@ -5,10 +5,20 @@ import os
 import json
 from datetime import datetime as dt
 import sys
+import re
+import uuid
 
 # Change the directory to the current directory of this file
 # In case there are files missing
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
+
+# Table name
+TABLE = 'students'
+
+# Connect to the database
+DATABASE = 'db.sqlite3'
+connection = sqlite3.connect(DATABASE)
+
 
 # Create a starter class for the app
 class Window(Frame):
@@ -49,56 +59,95 @@ class Window(Frame):
 
 		# Get all forms data and save them in the database
 		def save():
-			student_first_name = first_name.get()
-			student_last_name = last_name.get()
-			student_dob = dob.get()
-			student_father_name = father_name.get()
-			student_mother_name = mother_name.get()
-			student_major = major.get()
-			student_years_choosen = years_choosen.get()
-			student_country = country.get()
-			student_state = state.get()
-			# student_description = "Nothing"
-			student_description = description.get('1.0', END)
-
 			if(
 			   	(
-				    str(student_first_name) != "" and
-				   	str(student_last_name) != "" and
-				   	str(student_dob) != "" and
-				   	str(student_father_name) != "" and
-				   	str(student_mother_name) != "" and
-				   	str(student_major) != "" and
-				   	str(student_years_choosen) != "" and
-				   	str(student_country) != "" and
-				   	str(student_state) != "" and
-				   	str(student_description != "")
+				    str(first_name.get()) != "" and
+				   	str(last_name.get()) != "" and
+				   	str(dob.get()) != "" and
+				   	str(father_name.get()) != "" and
+				   	str(mother_name.get()) != "" and
+				   	str(major.get()) != "" and
+				   	str(years_choosen.get()) != "" and
+				   	str(country.get()) != "" and
+				   	str(state.get()) != "" and
+				   	str(description.get('1.0', END) != "")
 				) and (
-					student_years_choosen.isdigit() and
-					int(student_years_choosen) <= 4 and
-					len(str(student_description)) <= 500
+					years_choosen.get().isdigit() and
+					int(years_choosen.get()) <= 4 and
+					len(str(description.get('1.0', END))) <= 500
+				) and (
+					re.match(r'(0[1-9]|[12][0-9]|3[01]|[1-9])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d', dob.get())
 				)
 			   	):
-				first_name["text"] = ""
-				last_name["text"] = ""
-				dob["text"] = ""
-				father_name["text"] = ""
-				mother_name["text"] = ""
-				major["text"] = ""
-				years_choosen["text"] = ""
-				country["text"] = ""
-				state["text"] = ""
-				description["value"] = ""
-				print('student_first_name: ', student_first_name)
-				print('student_last_name: ', student_last_name)
-				print('student_dob: ', student_dob)
-				print('student_father_name: ', student_father_name)
-				print('student_mother_name: ', student_mother_name)
-				print('student_major: ', student_major)
-				print('student_years_choosen: ', student_years_choosen)
-				print('student_country: ', student_country)
-				print('student_state: ', student_state)
-				print('student_description: ', student_description)
+				# Grab all the form's data
+
+				student_first_name = first_name.get()
+				student_last_name = last_name.get()
+				student_dob = dob.get()
+				student_father_name = father_name.get()
+				student_mother_name = mother_name.get()
+				student_major = major.get()
+				student_years_choosen = years_choosen.get()
+				student_country = country.get()
+				student_state = state.get()
+				student_description = description.get('1.0', END)
+
+				# Clear all inputs
+				first_name.delete(0, END)
+				last_name.delete(0, END)
+				dob.delete(0, END)
+				father_name.delete(0, END)
+				mother_name.delete(0, END)
+				major.delete(0, END)
+				years_choosen.delete(0, END)
+				country.delete(0, END)
+				state.delete(0, END)
+				description.delete('1.0', END)
+
+				# Create a student list which have tuple as data to be inserted
+				student = (
+					f"{str(uuid.uuid4()).replace('-', '')}",
+					student_first_name,
+					student_last_name,
+					student_dob,
+					student_father_name,
+					student_mother_name,
+					student_major,
+					student_years_choosen,
+					student_country,
+					student_state,
+					student_description,
+				)
+
+				# Create a cursor to use while inserting the data into the database
+				cursor = connection.cursor()
+
+				# Create student table if it doesn't exist
+				cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABLE} (student_id TEXT PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL, dob TEXT NOT NULL, father_name TEXT NOT NULL, mother_name TEXT NOT NULL, major TEXT NOT NULL, years_choosen INTEGER NOT NULL, country TEXT NOT NULL, state TEXT NOT NULL, description TEXT NOT NULL)")
+
+				# Insert the data in the database
+				cursor.execute(f'INSERT INTO {TABLE} VALUES (?,?,?,?,?,?,?,?,?,?,?)', student)
+				print('Inserted data')
+
+				# Commit the changes
+				connection.commit()
+
+				print('Commited changes')
+
+				# Close the connection so that we can access the data base anywhere else
+				connection.close()
+				print('Closed the connnection')
+
+				# print('student_first_name: ', student_first_name)
+				# print('student_last_name: ', student_last_name)
+				# print('student_dob: ', student_dob)
+				# print('student_father_name: ', student_father_name)
+				# print('student_mother_name: ', student_mother_name)
+				# print('student_major: ', student_major)
+				# print('student_years_choosen: ', student_years_choosen)
+				# print('student_country: ', student_country)
+				# print('student_state: ', student_state)
+				# print('student_description: ', student_description)
 
 
 		# Create the choose year function
@@ -190,11 +239,11 @@ class Window(Frame):
 
 		# Year information
 		Label(data_entry_frame, text="Year: ", font=('Tahoma', 9)).grid(row=2, column=2, padx=(25, 2), sticky=W)
-		n = StringVar()
-		years_choosen = ttk.Combobox(data_entry_frame, font=('Tahoma', 9), textvariable=n, width=21)
+		self.n = StringVar()
+		years_choosen = ttk.Combobox(data_entry_frame, font=('Tahoma', 9), textvariable=self.n, width=21)
 		years_choosen['values'] = (1,2,3,4)
 		# Set the default value for years_choosen
-		years_choosen.current(1)
+		years_choosen.current(0)
 		years_choosen.grid(row=2, column=3, padx=2, ipady=4, sticky=W)
 
 		# Location information
