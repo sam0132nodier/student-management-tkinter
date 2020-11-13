@@ -8,6 +8,8 @@ import sys
 import re
 import uuid
 from dialog import MyDialog
+from tkinter import filedialog
+import json
 
 # Change the directory to the current directory of this file
 # In case there are files missing
@@ -37,7 +39,7 @@ class Window(Frame):
 			e.set("")
 
 		def open_file():
-			pass
+			filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")], initialdir = os.getcwd())
 		def client_exit(self):
 			sys.exit(0)
 		def undo_edit():
@@ -51,11 +53,11 @@ class Window(Frame):
 		def client_clean():
 			pass
 		def view_students():
-                        cursor = connection.cursor()
-                        data = []
-                        for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
-                                data.append(row)
-                        mydialog = MyDialog(root, data, title="Students List")
+			cursor = connection.cursor()
+			data = []
+			for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
+			    data.append(row)
+			mydialog = MyDialog(root, data, title="Students List")
 		def view_help():
 			pass
 		def about():
