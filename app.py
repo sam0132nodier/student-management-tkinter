@@ -53,9 +53,9 @@ class Window(Frame):
 		def view_students():
                         cursor = connection.cursor()
                         data = []
-                        for row in cursor.execute("SELECT student_id, first_name, last_name, major, major, years_choosen, country, state, description FROM students"):
+                        for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
                                 data.append(row)
-                        mydialog = MyDialog(root, data, title="motherfucker")
+                        mydialog = MyDialog(root, data, title="Students List")
 		def view_help():
 			pass
 		def about():
