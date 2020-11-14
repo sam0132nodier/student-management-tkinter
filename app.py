@@ -7,7 +7,8 @@ from datetime import datetime as dt
 import sys
 import re
 import uuid
-from dialog import MyDialog
+from view_students_dialog import MyDialog
+from add_students_dialog import MyDialog
 from tkinter import filedialog
 import json
 
@@ -39,7 +40,24 @@ class Window(Frame):
 			e.set("")
 
 		def open_file():
-			filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")], initialdir = os.getcwd())
+			file_path = filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")], initialdir = os.getcwd())
+			with open(file_path, 'r') as json_file:
+				data_dict = json.load(json_file)
+
+			all_data = []
+
+			for i in range(len(data_dict)):
+				all_data.append([((data_dict[i]["student_id"], data_dict[i]["first_name"], data_dict[i]["last_name"], data_dict[i]["major"], data_dict[i]["years_choosen"], data_dict[i]["country"], data_dict[i]["state"], data_dict[i]["description"])) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()])
+			data = set(all_data)
+			print(data)
+				# for key in data_dict[i]:
+				# 	if ((key in ["student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description"]) and
+				# 	    (data_dict[i][key] != None and data_dict[i][key] != '')):
+				# 		data_tuple = ()
+			# try:
+			# except json.decoder.JSONDecodeError:
+			# print('closed the dialog')
+
 		def client_exit(self):
 			sys.exit(0)
 		def undo_edit():
