@@ -7,8 +7,8 @@ from datetime import datetime as dt
 import sys
 import re
 import uuid
-from view_students_dialog import MyDialog
-from add_students_dialog import MyDialog
+from view_students_dialog import MyDialog as ViewStudents
+from add_students_dialog import MyDialog as AddStudents
 from tkinter import filedialog
 import json
 
@@ -47,9 +47,10 @@ class Window(Frame):
 			all_data = []
 
 			for i in range(len(data_dict)):
-				all_data.append([((data_dict[i]["student_id"], data_dict[i]["first_name"], data_dict[i]["last_name"], data_dict[i]["major"], data_dict[i]["years_choosen"], data_dict[i]["country"], data_dict[i]["state"], data_dict[i]["description"])) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()])
-			data = set(all_data)
-			print(data)
+				all_data.append([(data_dict[i]["student_id"], data_dict[i]["first_name"], data_dict[i]["last_name"], data_dict[i]["major"], data_dict[i]["years_choosen"], data_dict[i]["country"], data_dict[i]["state"], data_dict[i]["description"]) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()][0])
+			data = all_data
+			add_students = AddStudents(root, data, title="Add Students")
+			# print(all_data)
 				# for key in data_dict[i]:
 				# 	if ((key in ["student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description"]) and
 				# 	    (data_dict[i][key] != None and data_dict[i][key] != '')):
@@ -75,7 +76,7 @@ class Window(Frame):
 			data = []
 			for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
 			    data.append(row)
-			mydialog = MyDialog(root, data, title="Students List")
+			view_students = ViewStudents(root, data, title="Students List")
 		def view_help():
 			pass
 		def about():
@@ -284,6 +285,9 @@ class Window(Frame):
 		Label(data_entry_frame, text="Description: ", font=('Tahoma', 9)).grid(row=4, column=0, padx=(10, 2), sticky=W)
 		description = Text(data_entry_frame, font=('Tahoma', 9), width=109, height=5, relief=SOLID, borderwidth=1)
 		description.grid(row=4, column=1, columnspan=5, ipady=4, pady=(20, 20), sticky=W)
+
+		# Status text label
+
 
 		# Command buttons
 		close_btn = Button(data_entry_frame, text='Close', width=12, height=2, relief=SOLID, borderwidth=1)

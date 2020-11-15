@@ -84,7 +84,7 @@ class MyDialog(simpledialog.Dialog):
         add_button.pack(side=RIGHT, padx=5, pady=(10, 10))
 
         cancel_button = Button(box, text='Cancel', width=12, height=2, relief='solid', borderwidth=1, command=self.cancel)
-        cancle_button.pack(side=RIGHT, padx=5, pady=(10, 10))
+        cancel_button.pack(side=RIGHT, padx=5, pady=(10, 10))
 
         self.bind("<Return>", self.add)
         self.bind("<Escape>", self.cancel)
