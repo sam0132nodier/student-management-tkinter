@@ -10,7 +10,9 @@ import uuid
 from view_students_dialog import MyDialog as ViewStudents
 from add_students_dialog import MyDialog as AddStudents
 from tkinter import filedialog
+from tkinter import messagebox
 import json
+import webbrowser
 
 # Change the directory to the current directory of this file
 # In case there are files missing
@@ -40,24 +42,45 @@ class Window(Frame):
 			e.set("")
 
 		def open_file():
-			file_path = filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")], initialdir = os.getcwd())
-			with open(file_path, 'r') as json_file:
-				data_dict = json.load(json_file)
+			try:
+				file_path = filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")], initialdir = os.getcwd())
+				with open(file_path, 'r') as json_file:
+					data_dict = json.load(json_file)
 
-			all_data = []
+				all_data = []
+				display_data = []
 
-			for i in range(len(data_dict)):
-				all_data.append([(data_dict[i]["student_id"], data_dict[i]["first_name"], data_dict[i]["last_name"], data_dict[i]["major"], data_dict[i]["years_choosen"], data_dict[i]["country"], data_dict[i]["state"], data_dict[i]["description"]) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()][0])
-			data = all_data
-			add_students = AddStudents(root, data, title="Add Students")
-			# print(all_data)
-				# for key in data_dict[i]:
-				# 	if ((key in ["student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description"]) and
-				# 	    (data_dict[i][key] != None and data_dict[i][key] != '')):
-				# 		data_tuple = ()
-			# try:
-			# except json.decoder.JSONDecodeError:
-			# print('closed the dialog')
+				for i in range(len(data_dict)):
+					all_data.append([(
+					    data_dict[i]["student_id"],
+					    data_dict[i]["first_name"],
+					    data_dict[i]["last_name"],
+					    data_dict[i]["dob"],
+					    data_dict[i]["father_name"],
+					    data_dict[i]["mother_name"],
+					    data_dict[i]["major"],
+					    data_dict[i]["years_choosen"],
+					    data_dict[i]["country"],
+					    data_dict[i]["state"],
+					    data_dict[i]["description"]
+					) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()][0])
+					display_data.append([(
+					    data_dict[i]["student_id"],
+					    data_dict[i]["first_name"],
+					    data_dict[i]["last_name"],
+					    data_dict[i]["major"],
+					    data_dict[i]["years_choosen"],
+					    data_dict[i]["country"],
+					    data_dict[i]["state"],
+					    data_dict[i]["description"]
+					) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()][0])
+				complete_data = all_data
+				minified_data = display_data
+				add_students = AddStudents(root, complete_data, minified_data, title="Add Students")
+			except json.decoder.JSONDecodeError as error:
+				messagebox.showerror(title="JSON Problem", message=str(error))
+			except FileNotFoundError:
+				pass
 
 		def client_exit(self):
 			sys.exit(0)
@@ -69,16 +92,36 @@ class Window(Frame):
 			pass
 		def text_paste():
 			pass
-		def client_clean():
-			pass
+		def inputs_clean():
+			# Clear all inputs
+			first_name.delete(0, END)
+			last_name.delete(0, END)
+			dob.delete(0, END)
+			father_name.delete(0, END)
+			mother_name.delete(0, END)
+			major.delete(0, END)
+			years_choosen.delete(0, END)
+			country.delete(0, END)
+			state.delete(0, END)
+			description.delete('1.0', END)
+
 		def view_students():
-			cursor = connection.cursor()
-			data = []
-			for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
-			    data.append(row)
-			view_students = ViewStudents(root, data, title="Students List")
+			try:
+				cursor = connection.cursor()
+				data = []
+				for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
+				    data.append(row)
+				view_students = ViewStudents(root, data, title="Students List")
+			except Exception as error:
+				messagebox.showerror(title='Fetching Error', message=str(error))
 		def view_help():
-			pass
+			try:
+				browser = webbrowser.get('C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe')
+				url = 'https://github.com/sam0132nodier/student-management-tkinter/'
+				browser.open_new_tab(url)
+				browser.open_new(url)
+			except Exception as error:
+				messagebox.showerror(title='Fetching Error', message=str(error))
 		def about():
 			pass
 
@@ -145,35 +188,25 @@ class Window(Frame):
 					student_description,
 				)
 
-				# Create a cursor to use while inserting the data into the database
-				cursor = connection.cursor()
+				try:
+					# Create a cursor to use while inserting the data into the database
+					cursor = connection.cursor()
 
-				# Create student table if it doesn't exist
-				cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABLE} (student_id TEXT PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL, dob TEXT NOT NULL, father_name TEXT NOT NULL, mother_name TEXT NOT NULL, major TEXT NOT NULL, years_choosen INTEGER NOT NULL, country TEXT NOT NULL, state TEXT NOT NULL, description TEXT NOT NULL)")
+					# Create student table if it doesn't exist
+					cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABLE} (student_id TEXT PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL, dob TEXT NOT NULL, father_name TEXT NOT NULL, mother_name TEXT NOT NULL, major TEXT NOT NULL, years_choosen INTEGER NOT NULL, country TEXT NOT NULL, state TEXT NOT NULL, description TEXT NOT NULL)")
 
-				# Insert the data in the database
-				cursor.execute(f'INSERT INTO {TABLE} VALUES (?,?,?,?,?,?,?,?,?,?,?)', student)
-				print('Inserted data')
+					# Insert the data in the database
+					cursor.execute(f'INSERT INTO {TABLE} VALUES (?,?,?,?,?,?,?,?,?,?,?)', student)
 
-				# Commit the changes
-				connection.commit()
+					# Commit the changes
+					connection.commit()
 
-				print('Commited changes')
+					# Close the connection so that we can access the data base anywhere else
+					connection.close()
 
-				# Close the connection so that we can access the data base anywhere else
-				connection.close()
-				print('Closed the connnection')
-
-				# print('student_first_name: ', student_first_name)
-				# print('student_last_name: ', student_last_name)
-				# print('student_dob: ', student_dob)
-				# print('student_father_name: ', student_father_name)
-				# print('student_mother_name: ', student_mother_name)
-				# print('student_major: ', student_major)
-				# print('student_years_choosen: ', student_years_choosen)
-				# print('student_country: ', student_country)
-				# print('student_state: ', student_state)
-				# print('student_description: ', student_description)
+					messagebox.showinfor(title='Data Added', message="Student Data Added Successfully!")
+				except Exception as error:
+					messagebox.showerror(title='Database Error', message=str(error))
 
 
 		# Create the choose year function
@@ -204,7 +237,7 @@ class Window(Frame):
 			Edit.add_command(label="Copy", underline=0, command=text_copy)
 			Edit.add_command(label="Paste", underline=0, command=text_paste)
 			Edit.add_separator()
-			Edit.add_command(label="Clear", underline=0, command=client_clean)
+			Edit.add_command(label="Clear", underline=0, command=inputs_clean)
 			return Edit
 		def makeViewCommandMenu():
 			View = Menu(menuBar, tearoff=False)
@@ -286,11 +319,8 @@ class Window(Frame):
 		description = Text(data_entry_frame, font=('Tahoma', 9), width=109, height=5, relief=SOLID, borderwidth=1)
 		description.grid(row=4, column=1, columnspan=5, ipady=4, pady=(20, 20), sticky=W)
 
-		# Status text label
-
-
 		# Command buttons
-		close_btn = Button(data_entry_frame, text='Close', width=12, height=2, relief=SOLID, borderwidth=1)
+		close_btn = Button(data_entry_frame, text='Close', width=12, height=2, relief=SOLID, borderwidth=1, default=ACTIVE)
 		close_btn.grid(row=5, column=5, pady=(10, 10), sticky=W)
 		close_btn.bind("<Button-1>", client_exit)
 

@@ -1,9 +1,18 @@
 from tkinter import *
 from tkinter import simpledialog
+from tkinter import messagebox
+import sqlite3
+
+# Table name
+TABLE = 'students'
+
+# Database info
+DATABASE = 'db.sqlite3'
+connection = sqlite3.connect(DATABASE)
 
 class MyDialog(simpledialog.Dialog):
     """The Custom dialog box that is used to display student's data"""
-    def __init__(self, parent, data, title = None):
+    def __init__(self, parent, complete_data, minified_data, title = None):
         '''Initialize a dialog.
 
         Arguments:
@@ -25,7 +34,8 @@ class MyDialog(simpledialog.Dialog):
             self.title(title)
 
         self.parent = parent
-        self.data = data
+        self.complete_data = complete_data
+        self.minified_data = minified_data
 
         self.result = None
 
@@ -62,7 +72,7 @@ class MyDialog(simpledialog.Dialog):
         frame = Frame(master, borderwidth=4, relief='flat')
         frame.pack(fill='both', expand=True)
 
-        data_list = self.data
+        data_list = self.minified_data
 
         total_rows = len(data_list)
         total_columns = len(data_list[0])
@@ -93,7 +103,29 @@ class MyDialog(simpledialog.Dialog):
 
 
     def add(self, event=None):
-        print('Data Added')
+        try:
+            for tuple in self.complete_data:
+                # Create a cursor to use while inserting the data into the database
+                cursor = connection.cursor()
+
+                # Create student table if it doesn't exist
+                cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABLE} (student_id TEXT PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL, dob TEXT NOT NULL, father_name TEXT NOT NULL, mother_name TEXT NOT NULL, major TEXT NOT NULL, years_choosen INTEGER NOT NULL, country TEXT NOT NULL, state TEXT NOT NULL, description TEXT NOT NULL)")
+
+                # Insert the data in the database
+                cursor.execute(f'INSERT INTO {TABLE} VALUES (?,?,?,?,?,?,?,?,?,?,?)', tuple)
+
+                # Commit the changes
+                connection.commit()
+
+            messagebox.showinfo(title="Students Data", message="Students data added successfully")
+            if self.parent is not None:
+                self.parent.focus_set()
+            self.destroy()
+        except Exception as error:
+            messagebox.showerror(title='Database Problem', message=str(error))
+            if self.parent is not None:
+                self.parent.focus_set()
+            self.destroy()
 
     def cancel(self, event=None):
         # Put focus back to the parent window
