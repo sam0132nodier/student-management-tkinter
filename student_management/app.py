@@ -321,7 +321,6 @@ def student():
 	POS_X = int(root.winfo_screenwidth()/2-WIDTH/2)
 	POS_Y = int(root.winfo_screenheight()/2-HEIGHT/2)-50
 	root.geometry(f'{WIDTH}x{HEIGHT}+{POS_X}+{POS_Y}')
-	# root.minsize(WIDTH, HEIGHT)
 	root.resizable(0,0)
 	app = Window(root)
 	root.mainloop()
