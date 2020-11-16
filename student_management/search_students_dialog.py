@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import simpledialog
 from tkinter import ttk
+from tkinter import messagebox
 import sqlite3
 
 # Connect to the database
@@ -69,11 +70,35 @@ class MyDialog(simpledialog.Dialog):
         def search_data(event):
             if(str(category.get()) != "" and str(category.get()) != "Search using..." and str(search_entry.get()) != ""):
                 search_category = category.get()
+                if search_category == 'Student ID':
+                    column = 'student_id'
+                elif search_category == 'First Name':
+                    column = 'first_name'
+                elif search_category == 'Last Name':
+                    column = 'last_name'
+                elif search_category == 'Major':
+                    column = 'major'
+                elif search_category == 'Year':
+                    column = 'years_choosen'
+                elif search_category == 'Country':
+                    column = 'country'
+                elif search_category == 'State':
+                    column = 'state'
+
                 search_term = search_entry.get()
 
+                try:
+                    cursor = connection.cursor()
+                    data = []
+                    for row in cursor.execute(f"SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students WHERE {column} = {search_term}"):
+                        data.append(row)
+
+                    # Create a frame to display results on
+                    results_frame = Frame(master, borderwidth=4, relief='flat')
+                    results_frame.
+                catch Exception as error:
+                    messagebox.showerror(title='Fetching Error', message=str(error))
                 print(search_category, search_term)
-            # # Create a frame to display results on
-            # results_frame = Frame(master, borderwidth=4, relief='flat')
 
         frame = Frame(master, borderwidth=4, relief='flat')
         frame.pack(fill='x', expand=True)
