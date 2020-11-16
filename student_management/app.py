@@ -7,9 +7,9 @@ from datetime import datetime as dt
 import sys
 import re
 import uuid
-from view_students_dialog import MyDialog as ViewStudents
-from add_students_dialog import MyDialog as AddStudents
-from about_dialog import MyDialog as About
+from student_management.view_students_dialog import MyDialog as ViewStudents
+from student_management.add_students_dialog import MyDialog as AddStudents
+from student_management.about_dialog import MyDialog as About
 from tkinter import filedialog
 from tkinter import messagebox
 import json
@@ -77,13 +77,13 @@ class Window(Frame):
 					) if not (data_dict[i][key] in ('', None)) and key in ("student_id", "first_name", "last_name", "major", "years_choosen", "country", "state", "description") else None for key in data_dict[i].keys()][0])
 				complete_data = all_data
 				minified_data = display_data
-				add_students = AddStudents(root, complete_data, minified_data, title="Add Students")
+				add_students = AddStudents(self.master, complete_data, minified_data, title="Add Students")
 			except json.decoder.JSONDecodeError as error:
 				messagebox.showerror(title="JSON Problem", message=str(error))
 			except FileNotFoundError:
 				pass
 
-		def client_exit():
+		def client_exit(event):
 			sys.exit(0)
 		def inputs_clean():
 			# Clear all inputs
@@ -104,7 +104,7 @@ class Window(Frame):
 				data = []
 				for row in cursor.execute("SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students"):
 				    data.append(row)
-				view_students = ViewStudents(root, data, title="Students List")
+				view_students = ViewStudents(self.master, data, title="Students List")
 			except Exception as error:
 				messagebox.showerror(title='Fetching Error', message=str(error))
 		def view_help():
@@ -114,7 +114,7 @@ class Window(Frame):
 			except Exception as error:
 				messagebox.showerror(title='Fetching Error', message=str(error))
 		def about():
-			about = About(root, title="About Student Management")
+			about = About(self.master, title="About Student Management")
 
 
 		# Get all forms data and save them in the database
