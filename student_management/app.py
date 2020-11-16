@@ -10,6 +10,7 @@ import uuid
 from student_management.view_students_dialog import MyDialog as ViewStudents
 from student_management.add_students_dialog import MyDialog as AddStudents
 from student_management.about_dialog import MyDialog as About
+from student_management.search_students_dialog import MyDialog as Search
 from tkinter import filedialog
 from tkinter import messagebox
 import json
@@ -98,6 +99,8 @@ class Window(Frame):
 			state.delete(0, END)
 			description.delete('1.0', END)
 
+		def search_students():
+			search = Search(self.master, title="Search students")
 		def view_students():
 			try:
 				cursor = connection.cursor()
@@ -226,6 +229,8 @@ class Window(Frame):
 			return Edit
 		def makeViewCommandMenu():
 			View = Menu(menuBar, tearoff=False)
+			View.add_command(label="Search...", underline=0, command=search_students)
+			File.add_separator()
 			View.add_command(label="View Students", underline=0, command=view_students)
 			return View
 		def makeHelpCommandMenu():
