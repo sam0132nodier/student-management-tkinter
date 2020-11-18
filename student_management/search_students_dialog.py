@@ -1,8 +1,13 @@
+import os
 from tkinter import *
 from tkinter import simpledialog
 from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
+
+# Change the directory to the current directory of this file
+# In case there are files missing
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
 # Connect to the database
 DATABASE = 'db.sqlite3'
@@ -67,6 +72,7 @@ class MyDialog(simpledialog.Dialog):
 
         # Create the search_data function to do all the work required
         # To get the students' information as we need
+        data = []
         def search_data(event):
             if(str(category.get()) != "" and str(category.get()) != "Search using..." and str(search_entry.get()) != ""):
                 search_category = category.get()
@@ -89,16 +95,30 @@ class MyDialog(simpledialog.Dialog):
 
                 try:
                     cursor = connection.cursor()
-                    data = []
-                    for row in cursor.execute(f"SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students WHERE {column} = {search_term}"):
+                    for row in cursor.execute(f"SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students WHERE {column} = '{search_term}'"):
                         data.append(row)
 
                     # Create a frame to display results on
                     results_frame = Frame(master, borderwidth=4, relief='flat')
-                    results_frame.
-                catch Exception as error:
+                    results_frame.pack(fill='both', expand=True)
+
+                    data_list = data
+
+                    total_rows = len(data_list)
+                    total_columns = len(data_list[0])
+
+
+                    header_cols = ["Student ID", "First Name", "Last Name", "Major", "Year", "Country", "State", "Description"]
+                    for header_col in range(len(header_cols)):
+                        header_label = Label(results_frame, text=header_cols[header_col][:20], width=15, font=('Tahoma', 9, 'bold'), bg="#FFFFFF", relief="solid", borderwidth=1)
+                        header_label.grid(row=0, column=header_col, ipady=4, sticky=W)
+                    for row in range(total_rows):
+                        for col in range(total_columns):
+                            data_label = Label(results_frame, text=str(data_list[row][col])[:20], width=17, font=('Tahoma', 9), bg="#FFFFFF", relief="solid", borderwidth=1)
+                            data_label.grid(row=row+1, column=col, ipadx=0.5, ipady=4, sticky=W)
+
+                except Exception as error:
                     messagebox.showerror(title='Fetching Error', message=str(error))
-                print(search_category, search_term)
 
         frame = Frame(master, borderwidth=4, relief='flat')
         frame.pack(fill='x', expand=True)
@@ -122,28 +142,14 @@ class MyDialog(simpledialog.Dialog):
         search_btn = Button(frame, text='Search', width=12, height=2, relief=SOLID, borderwidth=1, default=ACTIVE)
         search_btn.grid(row=1, column=3, padx=(20, 0), sticky=W)
         search_btn.bind("<Button-1>", search_data)
-
-
-        # total_rows = len(data_list)
-        # total_columns = len(data_list[0])
-
-        # header_cols = ["Student ID", "First Name", "Last Name", "Major", "Year", "Country", "State", "Description"]
-        # for header_col in range(len(header_cols)):
-        #     header_label = Label(frame, text=header_cols[header_col][:20], width=15, font=('Tahoma', 9, 'bold'), bg="#FFFFFF", relief="solid", borderwidth=1)
-        #     header_label.grid(row=0, column=header_col, ipady=4, sticky=W)
-        # for row in range(total_rows):
-        #     for col in range(total_columns):
-        #         label = Label(frame, text=str(data_list[row][col])[:20], width=17, font=('Tahoma', 9), bg="#FFFFFF", relief="solid", borderwidth=1)
-        #         label.grid(row=row+1, column=col, ipadx=0.5, ipady=4, sticky=W)
-
+        search_btn.bind("<Return>", search_data)
 
     def buttonbox(self):
         box = Frame(self)
 
-        ok_button = Button(box, text='OK', width=12, height=2, relief=SOLID, borderwidth=1, command=self.ok, default=ACTIVE)
+        ok_button = Button(box, text='OK', width=12, height=2, relief=SOLID, borderwidth=1, command=self.ok)
         ok_button.pack(side=RIGHT, padx=5, pady=(10, 10))
 
-        self.bind("<Return>", self.ok)
 
         box.pack(fill=X, expand=True)
 
