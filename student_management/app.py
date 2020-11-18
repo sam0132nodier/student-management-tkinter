@@ -230,7 +230,7 @@ class Window(Frame):
 		def makeViewCommandMenu():
 			View = Menu(menuBar, tearoff=False)
 			View.add_command(label="Search...", underline=0, command=search_students)
-			File.add_separator()
+			View.add_separator()
 			View.add_command(label="View Students", underline=0, command=view_students)
 			return View
 		def makeHelpCommandMenu():
