@@ -98,9 +98,9 @@ class MyDialog(simpledialog.Dialog):
 					for row in cursor.execute(f"SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students WHERE {column} = '{search_term}'"):
 						data.append(row)
 
-					# Create a frame to display results on
-					results_frame = Frame(master, borderwidth=4, relief='flat')
-					results_frame.pack(fill='both', expand=True)
+					for widget in results_frame.winfo_children():
+						print(widget)
+						widget.destroy()
 
 					data_list = data
 
@@ -122,6 +122,10 @@ class MyDialog(simpledialog.Dialog):
 
 		frame = Frame(master, borderwidth=4, relief='flat')
 		frame.pack(fill='x', expand=True)
+
+		# Create a frame to display results on
+		results_frame = Frame(master, borderwidth=4, relief='flat')
+		results_frame.pack(fill='both', expand=True)
 
 		# Create the window header
 		Label(frame, text="Search students", font=('Tahoma', 12, 'bold')).grid(row=0, column=0, columnspan=4, pady=(5, 20))
