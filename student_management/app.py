@@ -30,15 +30,16 @@ connection = sqlite3.connect(DATABASE)
 
 # Create a starter class for the app
 class Window(Frame):
-
 	def __init__(self, master=None):
+		"""Creates the main application window and calls a function that initialize the window components.
+		"""
 		Frame.__init__(self, master)
 		self.master = master
 		self.init_window()
 
 	# Create the init_window function
 	def init_window(self):
-
+		"""Creates the application frame and adds the necessary components with their functionality"""
 		# Clear the text in the entry field
 		def clear_entry(self):
 			e.set("")
@@ -320,6 +321,10 @@ class Window(Frame):
 
 
 def student():
+	"""Create the root for application and set's its dimensions
+
+	This function is run in the __main__.py file to run the application.
+	"""
 	root = Tk()
 	WIDTH = 890
 	HEIGHT = 550
