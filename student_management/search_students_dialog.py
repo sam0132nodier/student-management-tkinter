@@ -90,14 +90,17 @@ class MyDialog(simpledialog.Dialog):
 				elif search_category == 'State':
 					column = 'state'
 
+				# Get the search entry term
 				search_term = search_entry.get()
 
 				try:
+					# Try getting the data from the database
 					data = []
 					cursor = connection.cursor()
 					for row in cursor.execute(f"SELECT student_id, first_name, last_name, major, years_choosen, country, state, description FROM students WHERE {column} = '{search_term}'"):
 						data.append(row)
 
+					# Clear the frame before re-rendering the results again
 					for widget in results_frame.winfo_children():
 						print(widget)
 						widget.destroy()
@@ -107,7 +110,7 @@ class MyDialog(simpledialog.Dialog):
 					total_rows = len(data_list)
 					total_columns = len(data_list[0])
 
-
+					# Display the tabulated data
 					header_cols = ["Student ID", "First Name", "Last Name", "Major", "Year", "Country", "State", "Description"]
 					for header_col in range(len(header_cols)):
 						header_label = Label(results_frame, text=header_cols[header_col][:20], width=15, font=('Tahoma', 9, 'bold'), bg="#FFFFFF", relief="solid", borderwidth=1)
