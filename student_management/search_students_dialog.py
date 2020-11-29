@@ -102,7 +102,6 @@ class MyDialog(simpledialog.Dialog):
 
 					# Clear the frame before re-rendering the results again
 					for widget in results_frame.winfo_children():
-						print(widget)
 						widget.destroy()
 
 					data_list = data
