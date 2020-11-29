@@ -25,6 +25,10 @@ TABLE = 'students'
 
 # Connect to the database
 DATABASE = 'db.sqlite3'
+
+if DATABASE not in os.listdir():
+	os.mkdir(DATABASE)
+
 connection = sqlite3.connect(DATABASE)
 
 
