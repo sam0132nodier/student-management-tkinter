@@ -28,7 +28,7 @@ DATABASE = 'db.sqlite3'
 
 # Create a database if it doesn't exist yet
 if DATABASE not in os.listdir():
-	os.mkdir(DATABASE)
+	open(DATABASE, 'a').close()
 
 connection = sqlite3.connect(DATABASE)
 
