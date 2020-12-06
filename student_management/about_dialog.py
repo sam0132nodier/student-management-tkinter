@@ -1,7 +1,8 @@
-from tkinter import *
-from tkinter import simpledialog
-from tkinter import messagebox
 import sqlite3
+
+from tkinter import *
+from tkinter import messagebox
+from tkinter import simpledialog
 
 # Table name
 TABLE = 'students'
