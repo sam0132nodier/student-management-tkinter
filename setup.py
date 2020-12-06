@@ -1,6 +1,7 @@
 """Setup file for student-management-tkinter"""
 
 import os.path
+
 from setuptools import setup
 
 # The directory containing this file
