@@ -1,20 +1,21 @@
-from tkinter import *
-from tkinter import ttk
-import sqlite3
-import os
 import json
-from datetime import datetime as dt
-import sys
+import json
+import os
 import re
+import sqlite3
+import sys
 import uuid
-from student_management.view_students_dialog import MyDialog as ViewStudents
-from student_management.add_students_dialog import MyDialog as AddStudents
+import webbrowser
+
+from datetime import datetime as dt
 from student_management.about_dialog import MyDialog as About
+from student_management.add_students_dialog import MyDialog as AddStudents
 from student_management.search_students_dialog import MyDialog as Search
+from student_management.view_students_dialog import MyDialog as ViewStudents
+from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
-import json
-import webbrowser
+from tkinter import ttk
 
 # Change the directory to the current directory of this file
 # In case there are files missing
