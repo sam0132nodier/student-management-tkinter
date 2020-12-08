@@ -1,9 +1,10 @@
 import os
+import sqlite3
+
 from tkinter import *
+from tkinter import messagebox
 from tkinter import simpledialog
 from tkinter import ttk
-from tkinter import messagebox
-import sqlite3
 
 # Change the directory to the current directory of this file
 # In case there are files missing
